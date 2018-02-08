@@ -25,8 +25,7 @@ class QuizModal extends React.Component {
 	}
 
 	addQuiz(quiz, sectionType) {
-        this.props.saveQuiz(quiz, sectionType)
-        this.props.addQuiz([this.props.quizzes.totalCount - 1])
+        this.props.saveQuiz(quiz, sectionType, this.props.sectionId)
 	}
 
 	onSure() {
@@ -45,19 +44,21 @@ class QuizModal extends React.Component {
 			let quiz = {basicType, title}
 
             const quizState = renderComponent.refs.quiz.state;
-
+			let options = [];
+			let answer = ''
             if(basicType === 'blankQuiz') {
-				const {answer} = quizState
-				quiz = Object.assign({}, quiz, {answer})
+				answer = quizState.answer
 			} else if(basicType === 'singleChoice') {
-				const {answer, options} = quizState
-				quiz = Object.assign({}, quiz, {answer, options})
+                answer = quizState.answer
+                options = quizState.options
 			} else {
-				const {answers, options} = quizState
-				quiz = Object.assign({}, quiz, {answers, options})
+                answer = quizState.answers.join(',')
+                options = quizState.options
 			}
 
-			isModify ? this.modifyQuiz(Object.assign({}, quiz, {id: this.props.quiz.id}), sectionType)
+            quiz = Object.assign({}, quiz, {answer, options})
+
+            isModify ? this.modifyQuiz(Object.assign({}, quiz, {id: this.props.quiz.id}), sectionType)
 				: this.addQuiz(quiz, sectionType)
 		}
 		this.props.closeModal();

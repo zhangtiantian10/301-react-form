@@ -6,7 +6,7 @@ export default (state = [], action) => {
 		case 'ADD_SECTION':
 			const radio = MAP_RADIOS.find(m => m.type === action.sectionType)
 			state.push({
-				type: action.sectionType,
+				sectionType: action.sectionType,
 				title: radio.text,
 				definition: {quizzes: []},
 				id: count

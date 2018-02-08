@@ -40,7 +40,7 @@ class HomeworkQuizModal extends React.Component {
 		const {quizzes, selectedQuizzes} = this.props
 		const {selectedRowKeys, isChecked} = this.state
 
-		const newQuizzes = quizzes.items.map(quiz => Object.assign({}, quiz, {key: quiz.id}))
+		const newQuizzes = quizzes.map(quiz => Object.assign({}, quiz, {key: quiz.id}))
 
 		const rowSelection = {
 			selectedRowKeys: selectedRowKeys,

@@ -1,5 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux'
+import {bindActionCreators} from 'redux'
 
 import Form from 'antd/lib/form'
 import Input from 'antd/lib/input'
@@ -34,18 +35,19 @@ class BasicInfo extends React.Component{
 		e.preventDefault()
 		this.props.form.validateFields((err, values) => {
 			if (!err) {
-				const sections = [];
+				const sections = [...this.props.sections];
 				const {name, description} = values
 				if (values.logicPuzzle) {
 					const {easy, normal, hard} = values
 					const quiz = {
-						"type": "logicPuzzle",
-						"definition": { easy, normal, hard }
+						type: "logicPuzzle",
+						definition: { easy, normal, hard },
+						id: sections[sections.length - 1].id + 1
 					}
 					sections.push(quiz)
 				}
 
-				this.props.addPaper({name, description, sections})
+				this.props.actions.addPaper({name, description, sections})
 			}
 		});
 	}
@@ -132,14 +134,14 @@ class BasicInfo extends React.Component{
 }
 
 const mapStateToProps = (state) => {
-	return {}
+	return {
+        sections: state.sections
+	}
 }
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		addPaper: (values) => {
-			dispatch(actions.addPaper(values))
-		}
+		actions: bindActionCreators(actions, dispatch)
 	}
 }
 

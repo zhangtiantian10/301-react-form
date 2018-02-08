@@ -5,6 +5,7 @@ import Col from 'antd/lib/col'
 import Card from 'antd/lib/card'
 import Input from 'antd/lib/input'
 import Icon from 'antd/lib/icon'
+import {bindActionCreators} from 'redux'
 
 import * as action from './action'
 import QuizModal from './QuizModal'
@@ -21,6 +22,12 @@ class SectionQuiz extends React.Component {
 			isModify: false,
 			currentQuiz: {}
 		}
+	}
+
+    componentWillReceiveProps(nextProps) {
+		if(nextProps.sectionQuiz.isSaveSuccess || nextProps.sectionQuiz.isModifySuccess) {
+            this.props.actions.getSectionQuiz(nextProps.section)
+        }
 	}
 
 	showModal() {
@@ -58,16 +65,18 @@ class SectionQuiz extends React.Component {
 	}
 
 	componentDidMount() {
+		console.log('-----------')
 		const {title} = this.props.section
 		this.setState({title})
-	}
+		this.props.actions.getHomeworkQuiz()
+    }
 
 	onAddHomeworkQuiz(quizzes) {
-		this.props.onAddQuizToSection(quizzes, this.props.section.id)
+		this.props.actions.addHomeworkQuizToSection(quizzes, this.props.section.id)
 	}
 
 	onDeleteQuiz(id) {
-		this.props.onDeleteQuiz(id, this.props.section.id)
+		this.props.actions.deleteQuiz(id, this.props.section)
 	}
 
 	modifyQuizStatus(quiz) {
@@ -80,9 +89,9 @@ class SectionQuiz extends React.Component {
 
     modifyQuizInSection(quiz, sectionType) {
 		if(sectionType === 'homeworkQuiz') {
-			this.props.onModifyQuizToSection(quiz, this.props.section.id)
+			this.props.actions.modifyQuizToSection(quiz, this.props.section.id)
 		} else {
-            this.props.onModifyQuiz(quiz, sectionType)
+            this.props.actions.modifyQuiz(quiz, sectionType)
         }
 	}
 
@@ -109,12 +118,12 @@ class SectionQuiz extends React.Component {
 			<Card>
 				<Row>
 				{section.definition.quizzes.map((quizId, i) => {
-					const quiz = sectionQuiz[section.type].items.find(item => quizId === item.id);
+					const quiz = sectionQuiz[section.sectionType].find(item => quizId === item.id);
 					return quiz ?
 						<Col span={3} key={i}>
 							<QuizContent
 								quiz={quiz}
-								quizType={section.type}
+								quizType={section.sectionType}
 								deleteQuiz={this.onDeleteQuiz.bind(this)}
                                 modifyQuizStatus={this.modifyQuizStatus.bind(this)}
 							/>
@@ -133,14 +142,15 @@ class SectionQuiz extends React.Component {
 			<QuizModal
 				visible={visible}
 				closeModal={this.closeModal.bind(this)}
-				quizzes={sectionQuiz[[section.type]]}
-				sectionType={section.type}
+				quizzes={sectionQuiz[[section.sectionType]]}
+				sectionType={section.sectionType}
 				selectedQuizzes={section.definition.quizzes}
 				addQuiz={this.onAddHomeworkQuiz.bind(this)}
-				saveQuiz={this.props.onSaveQuiz}
+				saveQuiz={this.props.actions.saveQuiz}
 				ref="quizModal"
 				isModify={isModify}
 				quiz={currentQuiz}
+				sectionId={section.id}
 				modifyQuiz={this.modifyQuizInSection.bind(this)}
 			/>
 		</div>)
@@ -155,25 +165,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-		onGetAllQuizzes: () => {
-			dispatch({type: 'GET_ALL_QUIZZES'})
-		},
-		onAddQuizToSection: (quizzes, id) => {
-			dispatch(action.addHomeworkQuizToSection(quizzes, id))
-		},
-		onSaveQuiz: (quiz, sectionType) => {
-			dispatch(action.saveQuiz(quiz, sectionType))
-		},
-        onDeleteQuiz: (id, sectionId) => {
-			dispatch(action.deleteQuiz(id, sectionId))
-		},
-        onModifyQuiz: (quiz, sectionType) => {
-			dispatch(action.modifyQuiz(quiz, sectionType))
-		},
-        onModifyQuizToSection: (quiz, sectionId) => {
-			dispatch(action.modifyQuizToSection(quiz, sectionId))
-		}
-	}
+        actions: bindActionCreators(action, dispatch)
+    }
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(SectionQuiz)

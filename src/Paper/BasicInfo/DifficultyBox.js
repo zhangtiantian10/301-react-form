@@ -12,7 +12,7 @@ const renderDifficulty = (getFieldDecorator, disabled) => {
 		return getFieldDecorator(item.type)(
 				<span span={8} key={i}>
 							<label>{item.label}</label>
-							<InputNumber disabled={disabled}/>
+							<InputNumber disabled={disabled} min={0}/>
 			</span>
 			)
 	})

@@ -19,7 +19,7 @@ class MultipleChoice extends React.Component {
         if (this.props.isModify) {
             this.setState({
                 options: this.props.quiz.options,
-                answers: this.props.quiz.answers
+                answers: this.props.quiz.answer.split(',')
             })
         }
     }

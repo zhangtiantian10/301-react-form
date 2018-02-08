@@ -29,5 +29,17 @@ router.get('/:id', (req, res) => {
     })
 })
 
+router.get('/', (req, res) => {
+    console.log('123----------')
+
+    HomeworkQuiz.find({}, (err, results) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(results)
+        }
+    })
+})
+
 module.exports = router
 

@@ -44,7 +44,7 @@ class HomeworkQuiz extends React.Component {
 			<Col span={20} offset={2}>
 				{sections.map( section => {
 					return (<SectionQuiz
-						quizzes={this.state[section.type]}
+						quizzes={this.state[section.sectionType]}
 						key={section.id}
 						section={section}
 						modifyTitle={this.modifyTitle.bind(this)}

@@ -10,10 +10,10 @@ router.post('/', (req, res) => {
     basicQuiz.save(function (err) {
         if (err){
             console.log(err);
-            res.status(400).json('err')
+            res.status(400).json(err)
         }
         else {
-            res.status(200).end()
+            res.status(201).json(basicQuiz._id)
         }
     })
 })
@@ -51,6 +51,20 @@ router.delete('/:id', (req, res) => {
             res.status(404).json(err)
         } else {
             res.status(204).end()
+        }
+    })
+})
+
+router.get('/all/:ids', (req, res) => {
+    console.log(req.params.ids)
+
+    const ids = req.params.ids.split(',')
+
+    BasicQuiz.find({_id: {'$in': ids}}, (err, results) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(results)
         }
     })
 })

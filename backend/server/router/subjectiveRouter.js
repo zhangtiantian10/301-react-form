@@ -13,7 +13,7 @@ router.post('/', (req, res) => {
             res.status(400).json('err')
         }
         else {
-            res.status(200).end()
+            res.status(201).json(subjective._id)
         }
     })
 })
@@ -51,6 +51,20 @@ router.delete('/:id', (req, res) => {
             res.status(404).json(err)
         } else {
             res.status(204).end()
+        }
+    })
+})
+
+router.get('/all/:ids', (req, res) => {
+    console.log(req.params.ids)
+
+    const ids = req.params.ids.split(',')
+
+    Subjective.find({_id: {'$in': ids}}, (err, results) => {
+        if (err) {
+            res.status(404).json(err)
+        } else {
+            res.status(200).json(results)
         }
     })
 })
